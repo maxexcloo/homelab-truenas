@@ -122,7 +122,18 @@ def deploy_services():
             container = find_container(containers, service, container_service)
 
             if container:
-                run(["docker", "exec", container, "rm", "-f", f"/{rel_path}"])
+                run(
+                    [
+                        "docker",
+                        "exec",
+                        "--user",
+                        "0",
+                        container,
+                        "rm",
+                        "-f",
+                        f"/{rel_path}",
+                    ]
+                )
                 service_changed = True
                 print(f"✓ {container}:/{rel_path} removed")
             else:
@@ -144,6 +155,8 @@ def deploy_services():
                         [
                             "docker",
                             "exec",
+                            "--user",
+                            "0",
                             container,
                             "mkdir",
                             "-p",
